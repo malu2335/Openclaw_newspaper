@@ -5,8 +5,6 @@ import os
 from pathlib import Path
 
 from .config import SkillConfig
-from .crawler import login_and_save_state
-from .pipeline import parse_target_date, run_daily_pipeline
 from .sources import SOURCES
 
 
@@ -34,6 +32,8 @@ def _env_name(site: str, field: str) -> str:
 
 
 def _run_login(args: argparse.Namespace, config: SkillConfig) -> None:
+    from .crawler import login_and_save_state
+
     sites = list(SOURCES.keys()) if args.site == "all" else [args.site]
     for site in sites:
         email = os.getenv(_env_name(site, "email"))
@@ -50,6 +50,8 @@ def _run_login(args: argparse.Namespace, config: SkillConfig) -> None:
 
 
 def _run_pipeline(args: argparse.Namespace, config: SkillConfig) -> None:
+    from .pipeline import parse_target_date, run_daily_pipeline
+
     if args.output_dir:
         config.output_dir = Path(args.output_dir)
     if args.max_articles is not None:
