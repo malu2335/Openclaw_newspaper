@@ -1,0 +1,43 @@
+name: nyt-wp-wsj-daily-bilingual
+version: 0.1.0
+author: your-team
+license: MIT
+description: >
+  抓取 NYT/WP/WSJ 每日新闻，支持登录态，翻译为中文，并导出中英双语 PDF。
+permissions:
+  - network
+  - browser
+  - filesystem
+entryPoint:
+  type: command
+  command: PYTHONPATH=src python -m openclaw_news_skill.cli run --date today
+config:
+  - key: output_dir
+    type: string
+    required: false
+    default: output
+    description: PDF 输出目录
+  - key: max_articles_per_source
+    type: number
+    required: false
+    default: 5
+    description: 每个来源每天抓取的文章上限
+  - key: translation_provider
+    type: string
+    required: false
+    default: openai
+    description: openai 或 deepl
+  - key: openai_api_key
+    type: string
+    required: false
+    secret: true
+    description: OpenAI API 密钥
+  - key: deepl_api_key
+    type: string
+    required: false
+    secret: true
+    description: DeepL API 密钥
+triggers:
+  - type: schedule
+    cron: "0 7 * * *"
+    description: 每天早上 7 点自动产出双语 PDF
