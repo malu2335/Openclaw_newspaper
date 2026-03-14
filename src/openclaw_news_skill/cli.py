@@ -5,21 +5,22 @@ import os
 from pathlib import Path
 
 from .config import SkillConfig
-from .sources import SOURCES
+from .sources import SOURCE_ALIASES, SOURCES, normalize_source_key
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="NYT/WP/WSJ 每日双语新闻技能")
+    parser = argparse.ArgumentParser(description="NYT/WP/WSJ/New Yorker/Wired 每日双语新闻技能")
     sub = parser.add_subparsers(dest="command", required=True)
 
     login_cmd = sub.add_parser("login", help="登录并保存各站点 Cookie/会话")
-    login_cmd.add_argument("--site", choices=["nyt", "wp", "wsj", "all"], default="all")
+    site_choices = sorted(set(SOURCES.keys()) | set(SOURCE_ALIASES.keys()) | {"all"})
+    login_cmd.add_argument("--site", choices=site_choices, default="all")
     login_cmd.add_argument("--manual", action="store_true", help="手动登录（浏览器中登录后回车）")
     login_cmd.add_argument("--headless", action="store_true", help="以无头模式启动浏览器")
 
     run_cmd = sub.add_parser("run", help="执行每日抓取+翻译+PDF 导出")
     run_cmd.add_argument("--date", default="today", help="today 或 YYYY-MM-DD")
-    run_cmd.add_argument("--sources", default="nyt,wp,wsj", help="逗号分隔，如 nyt,wsj")
+    run_cmd.add_argument("--sources", default="nyt,wp,wsj,newyorker,wired", help="逗号分隔，如 nyt,wsj,wired")
     run_cmd.add_argument("--output-dir", default=None, help="输出目录，默认读取 OUTPUT_DIR 或 output")
     run_cmd.add_argument("--max-articles", type=int, default=None, help="每个站点最大文章数")
     run_cmd.add_argument("--translation-provider", choices=["openai", "deepl"], default=None)
@@ -34,13 +35,25 @@ def _env_name(site: str, field: str) -> str:
     return f"{site.upper()}_{field.upper()}"
 
 
+def _get_site_secret(site: str, field: str) -> str | None:
+    # 兼容不同命名习惯：NEWYORKER 与 NEW_YORKER
+    candidates = [_env_name(site, field)]
+    if site == "newyorker":
+        candidates.append(f"NEW_YORKER_{field.upper()}")
+    for env_name in candidates:
+        value = os.getenv(env_name)
+        if value:
+            return value
+    return None
+
+
 def _run_login(args: argparse.Namespace, config: SkillConfig) -> None:
     from .crawler import login_and_save_state
 
-    sites = list(SOURCES.keys()) if args.site == "all" else [args.site]
+    sites = list(SOURCES.keys()) if args.site == "all" else [normalize_source_key(args.site)]
     for site in sites:
-        email = os.getenv(_env_name(site, "email"))
-        password = os.getenv(_env_name(site, "password"))
+        email = _get_site_secret(site, "email")
+        password = _get_site_secret(site, "password")
         state_file = login_and_save_state(
             source_key=site,
             auth_dir=config.auth_dir,
@@ -72,7 +85,12 @@ def _run_pipeline(args: argparse.Namespace, config: SkillConfig) -> None:
     if config.translation_provider == "openai":
         print(f"[info] 翻译模型: {config.openai_model}")
 
-    sources = [s.strip() for s in args.sources.split(",") if s.strip()]
+    raw_sources = [s.strip() for s in args.sources.split(",") if s.strip()]
+    sources: list[str] = []
+    for raw_source in raw_sources:
+        source = normalize_source_key(raw_source)
+        if source not in sources:
+            sources.append(source)
     unsupported = [s for s in sources if s not in SOURCES]
     if unsupported:
         raise ValueError(f"不支持的来源: {unsupported}，可选: {list(SOURCES)}")
