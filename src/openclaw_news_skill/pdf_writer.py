@@ -105,7 +105,7 @@ def write_bilingual_pdf(output_dir: Path, target_date: date, articles: list[Arti
     styles = _build_styles()
 
     story = [
-        Paragraph("NYT / WP / WSJ 每日新闻双语学习资料", styles["ZHTitle"]),
+        Paragraph("NYT / WP / WSJ / New Yorker / WIRED 每日新闻双语学习资料", styles["ZHTitle"]),
         Paragraph(f"生成日期：{target_date.isoformat()}", styles["ZHBody"]),
         Paragraph("English + Chinese | for study reference only", styles["Meta"]),
         Spacer(1, 0.4 * cm),

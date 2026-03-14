@@ -1,8 +1,8 @@
-# OpenClaw Skill：NYT / WP / WSJ 每日双语新闻 PDF
+# OpenClaw Skill：NYT / WP / WSJ / New Yorker / WIRED 每日双语新闻 PDF
 
 本仓库提供一个可执行的 OpenClaw Skill 模板，用于：
 
-1. 抓取 **NYT / Washington Post / WSJ** 每日新闻（支持登录态）
+1. 抓取 **NYT / Washington Post / WSJ / New Yorker / WIRED** 每日新闻（支持登录态）
 2. 将英文新闻翻译为高质量简体中文
 3. 导出中英双语 PDF（英文段落 + 中文段落对照）
 
@@ -79,6 +79,14 @@ export WP_EMAIL=...
 export WP_PASSWORD=...
 export WSJ_EMAIL=...
 export WSJ_PASSWORD=...
+export NEWYORKER_EMAIL=...
+export NEWYORKER_PASSWORD=...
+export WIRED_EMAIL=...
+export WIRED_PASSWORD=...
+
+# 兼容写法（可选）：
+# export NEW_YORKER_EMAIL=...
+# export NEW_YORKER_PASSWORD=...
 ```
 
 ---
@@ -104,15 +112,17 @@ PYTHONPATH=src python -m openclaw_news_skill.cli login --site all --manual
 ## 4) 执行每日抓取 + 翻译 + 生成 PDF
 
 ```bash
-PYTHONPATH=src python -m openclaw_news_skill.cli run --date today --sources nyt,wp,wsj
+PYTHONPATH=src python -m openclaw_news_skill.cli run --date today --sources nyt,wp,wsj,newyorker,wired
 ```
 
 启用 Perplexity 核查（命令行覆盖）：
 
 ```bash
-PYTHONPATH=src python -m openclaw_news_skill.cli run --date today --sources nyt,wp,wsj \
+PYTHONPATH=src python -m openclaw_news_skill.cli run --date today --sources nyt,wp,wsj,newyorker,wired \
   --enable-perplexity-check --perplexity-model sonar-pro
 ```
+
+`wierd` 拼写也可用，会自动映射到 `wired`。
 
 指定日期：
 
