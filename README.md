@@ -55,6 +55,12 @@ export OPENAI_MODEL=gpt-4.1-mini
 # export TRANSLATION_PROVIDER=deepl
 # export DEEPL_API_KEY=your_deepl_key
 
+# Perplexity 翻译准确性核查（可选）
+export ENABLE_PERPLEXITY_CHECK=true
+export PERPLEXITY_API_KEY=your_perplexity_key
+export PERPLEXITY_MODEL=sonar-pro
+export VERIFICATION_MAX_PAIRS=8
+
 # 抓取参数
 export OUTPUT_DIR=output
 export MAX_ARTICLES_PER_SOURCE=5
@@ -96,6 +102,13 @@ PYTHONPATH=src python -m openclaw_news_skill.cli login --site all --manual
 PYTHONPATH=src python -m openclaw_news_skill.cli run --date today --sources nyt,wp,wsj
 ```
 
+启用 Perplexity 核查（命令行覆盖）：
+
+```bash
+PYTHONPATH=src python -m openclaw_news_skill.cli run --date today --sources nyt,wp,wsj \
+  --enable-perplexity-check --perplexity-model sonar-pro
+```
+
 指定日期：
 
 ```bash
@@ -118,6 +131,13 @@ output/daily_news_bilingual_2026-03-14.pdf
 2. 保留事实要素：人名、机构名、数字、时间、引述归属，不做二次演绎。
 3. 建议在生产环境加入术语库（金融、宏观、法律术语）并做自动术语一致性检查。
 4. 对关键信息（数字、时间、地名）可增加“回译一致性抽样”质检流程。
+
+本项目已支持 `Perplexity` 自动核查：
+
+- 对标题与中英段落对进行一致性审查
+- 给出 `pass / warn / fail` 结果与置信度
+- 输出问题条目（原文摘录、译文摘录、修正建议）
+- 结果会写入每篇 PDF 页面，方便你快速筛选需要人工复核的段落
 
 ---
 

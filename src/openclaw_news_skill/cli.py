@@ -23,6 +23,9 @@ def _build_parser() -> argparse.ArgumentParser:
     run_cmd.add_argument("--output-dir", default=None, help="输出目录，默认读取 OUTPUT_DIR 或 output")
     run_cmd.add_argument("--max-articles", type=int, default=None, help="每个站点最大文章数")
     run_cmd.add_argument("--translation-provider", choices=["openai", "deepl"], default=None)
+    run_cmd.add_argument("--enable-perplexity-check", action="store_true", help="启用 Perplexity 翻译准确性核查")
+    run_cmd.add_argument("--disable-perplexity-check", action="store_true", help="关闭 Perplexity 翻译准确性核查")
+    run_cmd.add_argument("--perplexity-model", default=None, help="Perplexity 模型，如 sonar-pro")
 
     return parser
 
@@ -58,6 +61,12 @@ def _run_pipeline(args: argparse.Namespace, config: SkillConfig) -> None:
         config.max_articles_per_source = args.max_articles
     if args.translation_provider:
         config.translation_provider = args.translation_provider
+    if args.enable_perplexity_check:
+        config.enable_perplexity_check = True
+    if args.disable_perplexity_check:
+        config.enable_perplexity_check = False
+    if args.perplexity_model:
+        config.perplexity_model = args.perplexity_model
 
     target_date = parse_target_date(args.date)
     sources = [s.strip() for s in args.sources.split(",") if s.strip()]

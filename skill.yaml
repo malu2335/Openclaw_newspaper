@@ -37,6 +37,21 @@ config:
     required: false
     secret: true
     description: DeepL API 密钥
+  - key: enable_perplexity_check
+    type: boolean
+    required: false
+    default: false
+    description: 是否启用 Perplexity 翻译准确性核查
+  - key: perplexity_api_key
+    type: string
+    required: false
+    secret: true
+    description: Perplexity API 密钥
+  - key: perplexity_model
+    type: string
+    required: false
+    default: sonar-pro
+    description: Perplexity 质检模型
 triggers:
   - type: schedule
     cron: "0 7 * * *"
