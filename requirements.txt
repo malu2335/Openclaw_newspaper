@@ -1,0 +1,9 @@
+playwright
+beautifulsoup4
+readability-lxml
+reportlab
+python-dateutil
+requests
+openai
+deepl
+tenacity
