@@ -1,4 +1,4 @@
-"""OpenClaw skill: NYT/WP/WSJ daily bilingual news pipeline."""
+"""OpenClaw skill: multi-source daily bilingual news pipeline."""
 
 __all__ = ["__version__"]
 

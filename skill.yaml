@@ -3,7 +3,7 @@ version: 0.1.0
 author: your-team
 license: MIT
 description: >
-  抓取 NYT/WP/WSJ 每日新闻，支持登录态，翻译为中文，并导出中英双语 PDF。
+  抓取 NYT/WP/WSJ/New Yorker/WIRED 每日新闻，支持登录态，翻译为中文，并导出中英双语 PDF。
 permissions:
   - network
   - browser

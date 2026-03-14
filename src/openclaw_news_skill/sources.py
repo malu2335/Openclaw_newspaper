@@ -38,4 +38,30 @@ SOURCES: dict[str, NewsSource] = {
         article_url_keywords=("/articles/", "/livecoverage/", "/world/", "/economy/"),
         state_filename="wsj_state.json",
     ),
+    "newyorker": NewsSource(
+        key="newyorker",
+        homepage_url="https://www.newyorker.com/",
+        login_url="https://www.newyorker.com/account/sign-in",
+        article_url_keywords=("/news/", "/culture/", "/magazine/", "/story/"),
+        state_filename="newyorker_state.json",
+    ),
+    "wired": NewsSource(
+        key="wired",
+        homepage_url="https://www.wired.com/",
+        login_url="https://www.wired.com/account/sign-in",
+        article_url_keywords=("/story/",),
+        state_filename="wired_state.json",
+    ),
 }
+
+
+SOURCE_ALIASES: dict[str, str] = {
+    "wierd": "wired",
+    "new-yorker": "newyorker",
+    "new_yorker": "newyorker",
+}
+
+
+def normalize_source_key(raw: str) -> str:
+    key = raw.strip().lower()
+    return SOURCE_ALIASES.get(key, key)
