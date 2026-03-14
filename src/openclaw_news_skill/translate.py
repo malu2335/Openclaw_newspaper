@@ -17,9 +17,10 @@ class Translator(Protocol):
 class OpenAITranslator:
     api_key: str
     model: str = "gpt-4.1-mini"
+    base_url: str | None = None
 
     def __post_init__(self) -> None:
-        self.client = OpenAI(api_key=self.api_key)
+        self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
 
     @retry(wait=wait_exponential(multiplier=1, min=1, max=10), stop=stop_after_attempt(3))
     def translate(self, text: str) -> str:
@@ -61,12 +62,18 @@ class DeepLTranslator:
         return str(result).strip()
 
 
-def build_translator(provider: str, openai_api_key: str | None, deepl_api_key: str | None, openai_model: str) -> Translator:
+def build_translator(
+    provider: str,
+    openai_api_key: str | None,
+    deepl_api_key: str | None,
+    openai_model: str,
+    openai_base_url: str | None = None,
+) -> Translator:
     provider = provider.lower().strip()
     if provider == "openai":
         if not openai_api_key:
-            raise ValueError("TRANSLATION_PROVIDER=openai 时必须设置 OPENAI_API_KEY")
-        return OpenAITranslator(api_key=openai_api_key, model=openai_model)
+            raise ValueError("TRANSLATION_PROVIDER=openai 时必须设置 OPENAI_API_KEY 或 OPENCLAW_API_KEY")
+        return OpenAITranslator(api_key=openai_api_key, model=openai_model, base_url=openai_base_url)
     if provider == "deepl":
         if not deepl_api_key:
             raise ValueError("TRANSLATION_PROVIDER=deepl 时必须设置 DEEPL_API_KEY")

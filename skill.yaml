@@ -32,6 +32,15 @@ config:
     required: false
     secret: true
     description: OpenAI API 密钥
+  - key: openai_model
+    type: string
+    required: false
+    default: gpt-4.1-mini
+    description: 翻译模型（若设置 OPENCLAW_MODEL 将优先使用 OpenClaw 当前模型）
+  - key: openai_base_url
+    type: string
+    required: false
+    description: OpenAI 兼容网关地址（可使用 OPENCLAW_BASE_URL）
   - key: deepl_api_key
     type: string
     required: false

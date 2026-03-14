@@ -69,6 +69,9 @@ def _run_pipeline(args: argparse.Namespace, config: SkillConfig) -> None:
         config.perplexity_model = args.perplexity_model
 
     target_date = parse_target_date(args.date)
+    if config.translation_provider == "openai":
+        print(f"[info] 翻译模型: {config.openai_model}")
+
     sources = [s.strip() for s in args.sources.split(",") if s.strip()]
     unsupported = [s for s in sources if s not in SOURCES]
     if unsupported:

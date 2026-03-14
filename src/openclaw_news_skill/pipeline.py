@@ -30,6 +30,7 @@ def run_daily_pipeline(config: SkillConfig, target_date: date, sources: list[str
         openai_api_key=config.openai_api_key,
         deepl_api_key=config.deepl_api_key,
         openai_model=config.openai_model,
+        openai_base_url=config.openai_base_url,
     )
     verifier = build_verifier(
         enable_perplexity_check=config.enable_perplexity_check,

@@ -51,6 +51,11 @@ export TRANSLATION_PROVIDER=openai
 export OPENAI_API_KEY=your_openai_key
 export OPENAI_MODEL=gpt-4.1-mini
 
+# 如在 OpenClaw 运行环境，推荐直接使用其当前模型与网关：
+# export OPENCLAW_API_KEY=...
+# export OPENCLAW_BASE_URL=...
+# export OPENCLAW_MODEL=...   # 设置后将优先于 OPENAI_MODEL
+
 # 如果使用 DeepL：
 # export TRANSLATION_PROVIDER=deepl
 # export DEEPL_API_KEY=your_deepl_key
@@ -131,6 +136,7 @@ output/daily_news_bilingual_2026-03-14.pdf
 2. 保留事实要素：人名、机构名、数字、时间、引述归属，不做二次演绎。
 3. 建议在生产环境加入术语库（金融、宏观、法律术语）并做自动术语一致性检查。
 4. 对关键信息（数字、时间、地名）可增加“回译一致性抽样”质检流程。
+5. 在 OpenClaw 中运行时，建议设置 `OPENCLAW_MODEL`，本项目会优先使用该模型做翻译，确保和你当前会话使用同一模型。
 
 本项目已支持 `Perplexity` 自动核查：
 
