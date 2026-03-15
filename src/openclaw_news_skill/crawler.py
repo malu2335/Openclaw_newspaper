@@ -107,7 +107,10 @@ def login_and_save_state(
     state_file = source.state_file(auth_dir)
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=headless)
+        browser = p.chromium.launch(
+            headless=headless,
+            args=["--disable-http2"],  # 避免 WP/WSJ 等站点报 HTTP/2 协议错误
+        )
         context = browser.new_context()
         page = context.new_page()
         page.goto(source.login_url, wait_until="domcontentloaded", timeout=90000)
@@ -174,7 +177,10 @@ def fetch_articles_for_source(
     links: list[str] = []
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=headless)
+        browser = p.chromium.launch(
+            headless=headless,
+            args=["--disable-http2"],  # 避免 WP/WSJ 等站点报 HTTP/2 协议错误
+        )
         context = browser.new_context(storage_state=str(state_file))
         page = context.new_page()
         links = _collect_homepage_links(page, source)
